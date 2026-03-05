@@ -17,22 +17,10 @@ git push -u origin main
 1. Go to [railway.com](https://railway.com) and sign in (GitHub).
 2. **New Project** → **Deploy from GitHub repo**.
 3. Select **luleztech/asilia** and authorize if asked.
-4. After the repo is linked, add a **service** for the API:
-   - **Add Service** → **GitHub Repo** → choose **luleztech/asilia**.
-   - In the new service, open **Settings**:
-     - **Root Directory**: set to `backend` (so Railway builds and runs only the Node API).
-     - **Build Command**: leave default (`npm install`).
-     - **Start Command**: leave default (`npm start`) or set `node server.js`.
-5. Add **PostgreSQL**:
-   - In the same project, click **New** → **Database** → **PostgreSQL**.
-   - Railway creates a Postgres instance and exposes `DATABASE_URL`.
-6. **Variables** for the API service:
-   - Open the **backend** service → **Variables**.
-   - Add or confirm:
-     - `DATABASE_URL` – copy from the PostgreSQL service (Railway often injects this automatically if in same project).
-     - `JWT_SECRET` – set a long random string (e.g. from `openssl rand -hex 32`).
-   - Railway sets `PORT`; the app uses `process.env.PORT`, so no need to set it.
-7. **Deploy**: Railway builds and deploys on every push to `main`. First run the DB schema once (see below).
+4. **Important:** In the new service, open **Settings** → set **Root Directory** to **`backend`**. This makes Railway build only the Node API (otherwise it may detect the root Gemfile and fail with "No start command").
+5. Alternatively, the repo includes **nixpacks.toml** and **Procfile** at root so that deploying from the repo root still builds and runs the backend (`backend/`).
+6. Add **PostgreSQL**: In the same project, **New** → **Database** → **PostgreSQL**.
+7. **Variables** for the API service: add **JWT_SECRET**; **DATABASE_URL** is usually auto-injected if PostgreSQL is in the same project.
 
 ## 3. Run database schema
 
