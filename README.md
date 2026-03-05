@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dr.Job
 
 **Dr.Job** is a Swahili health education and symptom-checker mobile app for users in Tanzania and East Africa. It helps users identify possible diseases from symptoms, learn about diseases, discover herbal remedies, watch health videos, listen to audio lessons, and get basic health guidance.
