@@ -5,5 +5,9 @@ nixPkgs = ["nodejs_20"]
 [phases.install]
 cmds = ["cd backend && npm ci"]
 
+# No build step for this API (Nixpacks default would run "npm run build" which fails)
+[phases.build]
+cmds = []
+
 [start]
 cmd = "cd backend && node server.js"
