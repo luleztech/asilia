@@ -1,14 +1,14 @@
 /**
- * Dr.Job - Disease detail (description, symptoms, causes, treatment, herbal)
+ * Asilia - Disease detail (afyabora: hero image, overlay back, card sections)
  */
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import Header from '../components/Header';
+import { Ionicons } from '@expo/vector-icons';
 import Loading from '../components/Loading';
 import { apiGetDisease } from '../services/api';
-import { COLORS } from '../utils/constants';
+import { COLORS, SPACING, RADIUS, FONTS, SHADOW } from '../utils/constants';
 
 function Block({ title, children }) {
   return (
@@ -38,7 +38,11 @@ export default function DiseaseDetailScreen() {
   if (!item) {
     return (
       <View style={styles.container}>
-        <Header title="Maelezo" onBack={() => nav.goBack()} />
+        <View style={styles.headerMinimal}>
+          <TouchableOpacity onPress={() => nav.goBack()} style={styles.backBtn} activeOpacity={0.7}>
+            <Ionicons name="arrow-back" size={22} color={COLORS.cardForeground} />
+          </TouchableOpacity>
+        </View>
         <Text style={styles.empty}>Hakuna maelezo.</Text>
       </View>
     );
@@ -53,16 +57,28 @@ export default function DiseaseDetailScreen() {
 
   return (
     <View style={styles.container}>
-      <Header title={name} onBack={() => nav.goBack()} />
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+      <View style={styles.heroWrap}>
         {item.image ? (
           <Image source={{ uri: item.image }} style={styles.heroImage} resizeMode="cover" />
-        ) : null}
-        <Block title="Maelezo">{description || 'Hakuna maelezo.'}</Block>
-        {symptoms ? <Block title="Dalili">{symptoms}</Block> : null}
-        {causes ? <Block title="Sababu">{causes}</Block> : null}
-        {treatment ? <Block title="Matibabu hospitalini">{treatment}</Block> : null}
-        {herbal ? <Block title="Matibabu ya dawa za asili">{herbal}</Block> : null}
+        ) : (
+          <View style={styles.heroPlaceholder}>
+            <Ionicons name="medkit-outline" size={48} color={COLORS.primary} />
+          </View>
+        )}
+        <View style={styles.heroOverlay} />
+        <TouchableOpacity style={styles.backFloating} onPress={() => nav.goBack()} activeOpacity={0.7}>
+          <Ionicons name="arrow-back" size={22} color={COLORS.cardForeground} />
+        </TouchableOpacity>
+      </View>
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>{name}</Text>
+          <Block title="Maelezo">{description || 'Hakuna maelezo.'}</Block>
+          {symptoms ? <Block title="Dalili">{symptoms}</Block> : null}
+          {causes ? <Block title="Sababu">{causes}</Block> : null}
+          {treatment ? <Block title="Matibabu hospitalini">{treatment}</Block> : null}
+          {herbal ? <Block title="Matibabu ya dawa za asili">{herbal}</Block> : null}
+        </View>
         <View style={{ height: 32 }} />
       </ScrollView>
     </View>
@@ -71,30 +87,42 @@ export default function DiseaseDetailScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
+  heroWrap: { position: 'relative', height: 208 },
+  heroImage: { width: '100%', height: '100%' },
+  heroPlaceholder: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: COLORS.secondary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heroOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+  },
+  backFloating: {
+    position: 'absolute',
+    top: 48,
+    left: SPACING.md,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerMinimal: { paddingTop: 48, paddingHorizontal: SPACING.md },
   scroll: { flex: 1 },
-  content: { padding: 16, paddingBottom: 24 },
-  heroImage: { width: '100%', height: 180, borderRadius: 12, marginBottom: 16 },
-  block: {
+  content: { paddingHorizontal: SPACING.md, marginTop: -24 },
+  card: {
     backgroundColor: COLORS.card,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
+    borderRadius: RADIUS.xl,
+    padding: SPACING.lg,
+    ...SHADOW.card,
   },
-  blockTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: COLORS.primary,
-    marginBottom: 8,
-  },
-  blockText: {
-    fontSize: 14,
-    color: COLORS.text,
-    lineHeight: 22,
-  },
-  empty: { padding: 16, fontSize: 15, color: COLORS.textSecondary },
+  cardTitle: { fontSize: FONTS.size.xl, fontWeight: FONTS.weight.bold, color: COLORS.cardForeground, marginBottom: SPACING.md },
+  block: { marginBottom: SPACING.md },
+  blockTitle: { fontSize: FONTS.size.sm, fontWeight: FONTS.weight.bold, color: COLORS.cardForeground, marginBottom: SPACING.sm },
+  blockText: { fontSize: FONTS.size.sm, color: COLORS.mutedForeground, lineHeight: 22 },
+  empty: { padding: SPACING.md, fontSize: FONTS.size.base, color: COLORS.mutedForeground },
 });

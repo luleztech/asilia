@@ -1,10 +1,11 @@
 /**
- * Dr.Job - Search bar component
+ * Asilia - Search bar (afyabora: card/15 on primary or default)
  */
 
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { COLORS } from '../utils/constants';
+import React from 'react';
+import { View, TextInput, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS, RADIUS, SPACING, FONTS, SHADOW } from '../utils/constants';
 
 export default function SearchBar({
   placeholder = 'Tafuta...',
@@ -13,14 +14,21 @@ export default function SearchBar({
   onSubmit,
   onFocus,
   editable = true,
+  variant = 'default',
 }) {
+  const isOnPrimary = variant === 'onPrimary';
   return (
-    <View style={styles.wrapper}>
-      <Text style={styles.icon}>🔍</Text>
+    <View style={[styles.wrapper, isOnPrimary && styles.wrapperOnPrimary]}>
+      <Ionicons
+        name="search"
+        size={18}
+        color={isOnPrimary ? 'rgba(255,255,255,0.7)' : COLORS.mutedForeground}
+        style={styles.icon}
+      />
       <TextInput
-        style={styles.input}
+        style={[styles.input, isOnPrimary && styles.inputOnPrimary]}
         placeholder={placeholder}
-        placeholderTextColor={COLORS.textSecondary}
+        placeholderTextColor={isOnPrimary ? 'rgba(255,255,255,0.5)' : COLORS.mutedForeground}
         value={value}
         onChangeText={onChangeText}
         onSubmitEditing={onSubmit}
@@ -37,23 +45,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.card,
-    borderRadius: 12,
-    paddingHorizontal: 14,
+    borderRadius: RADIUS.lg,
+    paddingHorizontal: SPACING.md,
     height: 48,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
+    ...SHADOW.card,
   },
-  icon: {
-    fontSize: 18,
-    marginRight: 10,
+  wrapperOnPrimary: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    shadowOpacity: 0,
+    elevation: 0,
   },
+  icon: { marginRight: SPACING.sm },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: FONTS.size.sm,
     color: COLORS.text,
     paddingVertical: 0,
   },
+  inputOnPrimary: { color: COLORS.primaryForeground },
 });

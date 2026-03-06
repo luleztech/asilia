@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { COLORS } from '../utils/constants';
+import { COLORS, RADIUS, SPACING, FONTS } from '../utils/constants';
 
 export default function SymptomButton({ label, selected, onPress }) {
   return (
@@ -20,25 +20,25 @@ export default function SymptomButton({ label, selected, onPress }) {
 
 const styles = StyleSheet.create({
   btn: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm + 2,
+    borderRadius: RADIUS.full,
     backgroundColor: COLORS.card,
     borderWidth: 1.5,
     borderColor: COLORS.border,
-    marginRight: 8,
-    marginBottom: 8,
+    marginRight: SPACING.sm,
+    marginBottom: SPACING.sm,
   },
   btnSelected: {
-    backgroundColor: COLORS.primary + '20',
+    backgroundColor: COLORS.primary,
     borderColor: COLORS.primary,
   },
   text: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: FONTS.size.sm,
+    fontWeight: FONTS.weight.semibold,
     color: COLORS.text,
   },
   textSelected: {
-    color: COLORS.primaryDark,
+    color: COLORS.primaryForeground,
   },
 });

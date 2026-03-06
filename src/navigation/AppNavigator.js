@@ -6,7 +6,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import SplashScreen from '../screens/SplashScreen';
 import HomeScreen from '../screens/HomeScreen';
@@ -23,16 +24,18 @@ import ProfileScreen from '../screens/ProfileScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 
-import { COLORS } from '../utils/constants';
+import { COLORS, FONTS } from '../utils/constants';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const TabIcon = ({ label, focused }) => (
-  <View style={styles.tabIcon}>
-    <Text style={[styles.tabIconText, focused && styles.tabIconTextActive]}>{label.charAt(0)}</Text>
-  </View>
-);
+const tabIcons = {
+  HomeTab: { active: 'home', inactive: 'home-outline' },
+  DiseasesTab: { active: 'medkit', inactive: 'medkit-outline' },
+  HerbsTab: { active: 'leaf', inactive: 'leaf-outline' },
+  VideosTab: { active: 'videocam', inactive: 'videocam-outline' },
+  ProfileTab: { active: 'person', inactive: 'person-outline' },
+};
 
 function MainTabs() {
   return (
@@ -43,6 +46,7 @@ function MainTabs() {
         tabBarInactiveTintColor: COLORS.textSecondary,
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabBarLabel,
+        tabBarIconStyle: styles.tabBarIcon,
       }}
     >
       <Tab.Screen
@@ -50,7 +54,13 @@ function MainTabs() {
         component={HomeScreen}
         options={{
           tabBarLabel: 'Nyumbani',
-          tabBarIcon: ({ focused }) => <TabIcon label="Nyumbani" focused={focused} />,
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name={tabIcons.HomeTab[focused ? 'active' : 'inactive']}
+              size={24}
+              color={focused ? COLORS.primary : COLORS.textSecondary}
+            />
+          ),
         }}
       />
       <Tab.Screen
@@ -58,7 +68,13 @@ function MainTabs() {
         component={DiseasesScreen}
         options={{
           tabBarLabel: 'Magonjwa',
-          tabBarIcon: ({ focused }) => <TabIcon label="Magonjwa" focused={focused} />,
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name={tabIcons.DiseasesTab[focused ? 'active' : 'inactive']}
+              size={24}
+              color={focused ? COLORS.primary : COLORS.textSecondary}
+            />
+          ),
         }}
       />
       <Tab.Screen
@@ -66,7 +82,13 @@ function MainTabs() {
         component={HerbsScreen}
         options={{
           tabBarLabel: 'Dawa za Asili',
-          tabBarIcon: ({ focused }) => <TabIcon label="Dawa" focused={focused} />,
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name={tabIcons.HerbsTab[focused ? 'active' : 'inactive']}
+              size={24}
+              color={focused ? COLORS.primary : COLORS.textSecondary}
+            />
+          ),
         }}
       />
       <Tab.Screen
@@ -74,7 +96,13 @@ function MainTabs() {
         component={VideosScreen}
         options={{
           tabBarLabel: 'Video',
-          tabBarIcon: ({ focused }) => <TabIcon label="Video" focused={focused} />,
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name={tabIcons.VideosTab[focused ? 'active' : 'inactive']}
+              size={24}
+              color={focused ? COLORS.primary : COLORS.textSecondary}
+            />
+          ),
         }}
       />
       <Tab.Screen
@@ -82,7 +110,13 @@ function MainTabs() {
         component={ProfileScreen}
         options={{
           tabBarLabel: 'Wasifu',
-          tabBarIcon: ({ focused }) => <TabIcon label="Wasifu" focused={focused} />,
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name={tabIcons.ProfileTab[focused ? 'active' : 'inactive']}
+              size={24}
+              color={focused ? COLORS.primary : COLORS.textSecondary}
+            />
+          ),
         }}
       />
     </Tab.Navigator>
@@ -119,28 +153,15 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.card,
     borderTopColor: COLORS.border,
     borderTopWidth: 1,
-    paddingBottom: Platform.OS === 'ios' ? 24 : 8,
-    paddingTop: 8,
-    height: Platform.OS === 'ios' ? 88 : 64,
+    paddingBottom: Platform.OS === 'ios' ? 24 : 10,
+    paddingTop: 10,
+    height: Platform.OS === 'ios' ? 88 : 68,
   },
   tabBarLabel: {
     fontSize: 11,
-    fontWeight: '500',
+    fontWeight: FONTS.weight.medium,
   },
-  tabIcon: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: COLORS.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tabIconText: {
-    fontSize: 12,
-    color: COLORS.textSecondary,
-    fontWeight: '600',
-  },
-  tabIconTextActive: {
-    color: COLORS.primary,
+  tabBarIcon: {
+    marginBottom: -2,
   },
 });

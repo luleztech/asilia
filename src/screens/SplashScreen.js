@@ -1,30 +1,33 @@
 /**
- * Dr.Job - Splash screen (logo + 3s then Home)
+ * Asilia - Splash (afyabora style: primary bg, logo, tagline)
+ * Uses View + Text to avoid @expo/vector-icons load order issues.
  */
 
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { COLORS, APP_NAME } from '../utils/constants';
+import { COLORS, APP_NAME, SPACING, FONTS } from '../utils/constants';
 
 export default function SplashScreen() {
   const nav = useNavigation();
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    const t = setTimeout(() => nav.replace('Main'), 3000);
+    const t = setTimeout(() => nav.replace('Main'), 2500);
     return () => clearTimeout(t);
   }, [nav]);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       <View style={styles.logoWrap}>
-        <Text style={styles.logo}>🩺</Text>
+        <View style={styles.logoIconWrap}>
+          <Text style={styles.logoEmoji}>🩺</Text>
+        </View>
         <Text style={styles.title}>{APP_NAME}</Text>
-        <Text style={styles.tagline}>Elimu ya afya - Dawa za asili</Text>
+        <Text style={styles.tagline}>Afya yako mikononi mwako</Text>
       </View>
-      <ActivityIndicator size="large" color={COLORS.primary} style={styles.spinner} />
+      <ActivityIndicator size="small" color={COLORS.primaryForeground} style={styles.spinner} />
     </View>
   );
 }
@@ -32,13 +35,27 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
   logoWrap: { alignItems: 'center' },
-  logo: { fontSize: 72, marginBottom: 16 },
-  title: { fontSize: 32, fontWeight: '800', color: COLORS.primary, letterSpacing: 0.5 },
-  tagline: { fontSize: 14, color: COLORS.textSecondary, marginTop: 8 },
+  logoIconWrap: {
+    width: 80,
+    height: 80,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACING.lg,
+  },
+  logoEmoji: { fontSize: 40 },
+  title: {
+    fontSize: 30,
+    fontWeight: FONTS.weight.extrabold,
+    color: COLORS.primaryForeground,
+    letterSpacing: 0.5,
+  },
+  tagline: { fontSize: FONTS.size.sm, color: 'rgba(255,255,255,0.7)', marginTop: SPACING.sm },
   spinner: { position: 'absolute', bottom: 48 },
 });

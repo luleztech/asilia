@@ -7,7 +7,7 @@ import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Header from '../components/Header';
 import DiseaseCard from '../components/DiseaseCard';
-import { COLORS } from '../utils/constants';
+import { COLORS, SPACING, FONTS } from '../utils/constants';
 
 export default function SymptomsResultScreen() {
   const nav = useNavigation();
@@ -44,12 +44,12 @@ export default function SymptomsResultScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
   scroll: { flex: 1 },
-  content: { padding: 16, paddingBottom: 32 },
+  content: { padding: SPACING.md, paddingBottom: SPACING.xl },
   subtitle: {
-    fontSize: 14,
-    color: COLORS.textSecondary,
-    marginBottom: 16,
+    fontSize: FONTS.size.sm,
+    color: COLORS.mutedForeground,
+    marginBottom: SPACING.md,
   },
-  empty: { fontSize: 15, color: COLORS.textSecondary },
-  error: { fontSize: 15, color: COLORS.error },
+  empty: { fontSize: FONTS.size.base, color: COLORS.mutedForeground },
+  error: { fontSize: FONTS.size.base, color: COLORS.destructive },
 });

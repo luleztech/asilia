@@ -1,15 +1,16 @@
 /**
- * Dr.Job - Videos list
+ * Asilia - Videos list (afyabora: primary header "Video za Afya")
  */
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import VideoCard from '../components/VideoCard';
 import Loading from '../components/Loading';
 import { apiGetVideos } from '../services/api';
-import { COLORS } from '../utils/constants';
+import { COLORS, SPACING, FONTS } from '../utils/constants';
 
 export default function VideosScreen() {
   const nav = useNavigation();
@@ -24,24 +25,36 @@ export default function VideosScreen() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <Loading message="Inapakia video..." />;
+  if (loading) return <Loading message="Inapakia..." />;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <Text style={styles.title}>Video za afya</Text>
-        <Text style={styles.subtitle}>Mafunzo ya video</Text>
+        <TouchableOpacity onPress={() => nav.navigate('HomeTab')} style={styles.backBtn} activeOpacity={0.7}>
+          <Ionicons name="arrow-back" size={22} color={COLORS.primaryForeground} />
+        </TouchableOpacity>
+        <Text style={styles.title}>Video za Afya</Text>
+        <View style={styles.backBtn} />
       </View>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
-        {list.map((v) => (
-          <VideoCard
-            key={v.id}
-            title={v.title}
-            description={v.description}
-            thumbnail={v.thumbnail}
-            onPress={() => {}}
-          />
-        ))}
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.grid}>
+          {list.map((v) => (
+            <View key={v.id} style={styles.gridItem}>
+              <VideoCard
+                title={v.title}
+                description={v.description}
+                thumbnail={v.thumbnail}
+                isPremium={v.is_premium}
+                onPress={() => {}}
+                grid
+              />
+            </View>
+          ))}
+        </View>
         {list.length === 0 && <Text style={styles.empty}>Hakuna video.</Text>}
       </ScrollView>
     </View>
@@ -50,10 +63,21 @@ export default function VideosScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
-  header: { paddingHorizontal: 16, paddingVertical: 16, backgroundColor: COLORS.card },
-  title: { fontSize: 24, fontWeight: '800', color: COLORS.text },
-  subtitle: { fontSize: 14, color: COLORS.textSecondary, marginTop: 4 },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.md,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+  backBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  title: { fontSize: FONTS.size.lg, fontWeight: FONTS.weight.bold, color: COLORS.primaryForeground },
   scroll: { flex: 1 },
-  content: { padding: 16, paddingBottom: 32 },
-  empty: { fontSize: 15, color: COLORS.textSecondary },
+  content: { padding: SPACING.md, paddingBottom: SPACING.xl },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -6 },
+  gridItem: { width: '50%', padding: 6 },
+  empty: { fontSize: FONTS.size.base, color: COLORS.mutedForeground },
 });

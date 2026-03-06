@@ -1,15 +1,21 @@
+/**
+ * Asilia - Symptom checker (afyabora: primary header, search, chips, Kagua button)
+ */
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Header from '../components/Header';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import SymptomButton from '../components/SymptomButton';
 import SearchBar from '../components/SearchBar';
 import Loading from '../components/Loading';
 import { apiGetSymptoms, apiSymptomCheck } from '../services/api';
-import { COLORS } from '../utils/constants';
+import { COLORS, SPACING, RADIUS, FONTS, SHADOW } from '../utils/constants';
 
 export default function SearchSymptomsScreen() {
   const nav = useNavigation();
+  const insets = useSafeAreaInsets();
   const [symptoms, setSymptoms] = useState([]);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,18 +61,39 @@ export default function SearchSymptomsScreen() {
   if (loading) return <Loading message="Inapakia dalili..." />;
 
   return (
-    <View style={styles.container}>
-      <Header title="Kagua dalili" onBack={() => nav.goBack()} />
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.header}>
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={() => nav.goBack()} style={styles.backBtn} activeOpacity={0.7}>
+            <Ionicons name="arrow-back" size={22} color={COLORS.primaryForeground} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Angalia Dalili</Text>
+          <View style={styles.backBtn} />
+        </View>
+        <View style={styles.searchWrap}>
+          <SearchBar
+            placeholder="Tafuta dalili..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            variant="onPrimary"
+          />
+        </View>
+      </View>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <SearchBar placeholder="Tafuta dalili" value={searchQuery} onChangeText={setSearchQuery} />
-        <Text style={styles.hint}>Chagua dalili kisha bonyeza Kagua</Text>
+        <Text style={styles.hint}>Chagua dalili zako ({selectedIds.size} zimechaguliwa)</Text>
         <View style={styles.chips}>
           {filtered.map((s) => (
             <SymptomButton key={s.id} label={s.name} selected={selectedIds.has(s.id)} onPress={() => toggleSymptom(s.id)} />
           ))}
         </View>
-        <TouchableOpacity style={[styles.submitBtn, (selectedIds.size === 0 || checking) && styles.submitDisabled]} onPress={handleCheck} disabled={selectedIds.size === 0 || checking} activeOpacity={0.85}>
-          <Text style={styles.submitText}>{checking ? 'Inakagua...' : 'Kagua magonjwa'}</Text>
+        <TouchableOpacity
+          style={[styles.submitBtn, (selectedIds.size === 0 || checking) && styles.submitDisabled]}
+          onPress={handleCheck}
+          disabled={selectedIds.size === 0 || checking}
+          activeOpacity={0.85}
+        >
+          <Ionicons name="medkit" size={18} color={COLORS.primaryForeground} style={styles.submitIcon} />
+          <Text style={styles.submitText}>{checking ? 'Inakagua...' : 'Kagua magonjwa yanayowezekana'}</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -75,11 +102,36 @@ export default function SearchSymptomsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
+  header: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: SPACING.md,
+    paddingTop: SPACING.md,
+    paddingBottom: SPACING.md,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  backBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  title: { fontSize: FONTS.size.lg, fontWeight: FONTS.weight.bold, color: COLORS.primaryForeground },
+  searchWrap: { marginTop: SPACING.sm },
   scroll: { flex: 1 },
-  content: { padding: 16, paddingBottom: 32 },
-  hint: { fontSize: 13, color: COLORS.textSecondary, marginTop: 12, marginBottom: 16 },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 24 },
-  submitBtn: { backgroundColor: COLORS.primary, borderRadius: 12, paddingVertical: 16, alignItems: 'center' },
-  submitDisabled: { backgroundColor: COLORS.textSecondary, opacity: 0.7 },
-  submitText: { fontSize: 16, fontWeight: '700', color: '#fff' },
+  content: { padding: SPACING.md, paddingBottom: SPACING.xl },
+  hint: { fontSize: FONTS.size.sm, color: COLORS.mutedForeground, marginBottom: SPACING.sm },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: SPACING.lg },
+  submitBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.primary,
+    borderRadius: RADIUS.lg,
+    paddingVertical: 14,
+    ...SHADOW.button,
+  },
+  submitDisabled: { opacity: 0.5 },
+  submitIcon: { marginRight: 8 },
+  submitText: { fontSize: FONTS.size.sm, fontWeight: FONTS.weight.semibold, color: COLORS.primaryForeground },
 });

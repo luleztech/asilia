@@ -1,0 +1,12 @@
+diff --git a/node_modules/@react-native/codegen/lib/cli/combine/combine-js-to-schema.js b/node_modules/@react-native/codegen/lib/cli/combine/combine-js-to-schema.js
+index 1234567..89abcde 100644
+--- a/node_modules/@react-native/codegen/lib/cli/combine/combine-js-to-schema.js
++++ b/node_modules/@react-native/codegen/lib/cli/combine/combine-js-to-schema.js
+@@ -52,6 +52,7 @@ const flowParser = new FlowParser();
+ function expandDirectoriesIntoFiles(fileList, platform, exclude) {
+   return fileList
+     .flatMap(file => {
++      if (!fs.existsSync(file)) return [];
+       if (!fs.lstatSync(file).isDirectory()) {
+         return [file];
+       }

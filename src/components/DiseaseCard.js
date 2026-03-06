@@ -1,75 +1,91 @@
 /**
- * Dr.Job - Disease card for lists
+ * Asilia - Disease card (afyabora: compact + full variants)
  */
 
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { truncate } from '../utils/helpers';
-import { COLORS } from '../utils/constants';
+import { COLORS, RADIUS, SPACING, FONTS, SHADOW } from '../utils/constants';
 
-export default function DiseaseCard({ name, description, image, onPress }) {
-  return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.85}>
-      <View style={styles.imageWrap}>
-        {image ? (
-          <Image source={{ uri: image }} style={styles.image} resizeMode="cover" />
+export default function DiseaseCard({ name, description, image, onPress, compact }) {
+  const img = image;
+  if (compact) {
+    return (
+      <TouchableOpacity style={styles.compactCard} onPress={onPress} activeOpacity={0.85}>
+        {img ? (
+          <Image source={{ uri: img }} style={styles.compactImage} resizeMode="cover" />
         ) : (
-          <View style={styles.placeholder}>
-            <Text style={styles.placeholderText}>🩺</Text>
+          <View style={styles.compactPlaceholder}>
+            <Ionicons name="medkit-outline" size={28} color={COLORS.primary} />
           </View>
         )}
-      </View>
+        <View style={styles.compactContent}>
+          <Text style={styles.compactName} numberOfLines={1}>{name}</Text>
+          <Text style={styles.compactDesc} numberOfLines={2}>{truncate(description || '', 50)}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
+  return (
+    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.85}>
+      {img ? (
+        <Image source={{ uri: img }} style={styles.image} resizeMode="cover" />
+      ) : (
+        <View style={styles.placeholder}>
+          <Ionicons name="medkit-outline" size={32} color={COLORS.primary} />
+        </View>
+      )}
       <View style={styles.content}>
         <Text style={styles.name} numberOfLines={1}>{name}</Text>
         <Text style={styles.desc} numberOfLines={2}>{truncate(description || '', 60)}</Text>
       </View>
+      <Ionicons name="chevron-forward" size={18} color={COLORS.mutedForeground} />
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
+  compactCard: {
+    width: 144,
+    marginRight: SPACING.sm,
     backgroundColor: COLORS.card,
-    borderRadius: 12,
+    borderRadius: RADIUS.lg,
     overflow: 'hidden',
-    marginBottom: 12,
-    flexDirection: 'row',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
+    ...SHADOW.card,
   },
-  imageWrap: {
-    width: 80,
+  compactImage: { width: '100%', height: 80 },
+  compactPlaceholder: {
+    width: '100%',
     height: 80,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-  placeholder: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: COLORS.primary + '20',
+    backgroundColor: COLORS.secondary,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  placeholderText: { fontSize: 28 },
-  content: {
-    flex: 1,
-    padding: 12,
+  compactContent: { padding: 10 },
+  compactName: { fontSize: FONTS.size.sm, fontWeight: FONTS.weight.semibold, color: COLORS.cardForeground },
+  compactDesc: { fontSize: 11, color: COLORS.mutedForeground, marginTop: 2 },
+  card: {
+    backgroundColor: COLORS.card,
+    borderRadius: RADIUS.lg,
+    overflow: 'hidden',
+    marginBottom: SPACING.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: SPACING.sm,
+    ...SHADOW.card,
+  },
+  image: { width: 64, height: 64, borderRadius: RADIUS.md },
+  placeholder: {
+    width: 64,
+    height: 64,
+    borderRadius: RADIUS.md,
+    backgroundColor: COLORS.secondary,
+    alignItems: 'center',
     justifyContent: 'center',
   },
-  name: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: COLORS.text,
-    marginBottom: 4,
-  },
-  desc: {
-    fontSize: 13,
-    color: COLORS.textSecondary,
-    lineHeight: 18,
-  },
+  content: { flex: 1, marginLeft: SPACING.sm, justifyContent: 'center' },
+  name: { fontSize: FONTS.size.sm, fontWeight: FONTS.weight.semibold, color: COLORS.text },
+  desc: { fontSize: 12, color: COLORS.mutedForeground, marginTop: 2 },
 });

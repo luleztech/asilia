@@ -1,10 +1,15 @@
+/**
+ * Asilia - Home (afyabora: primary header, search, Angalia Dalili CTA, sections)
+ */
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SearchBar, DiseaseCard, HerbCard, VideoCard, SectionTitle, Loading } from '../components';
+import { SearchBar, DiseaseCard, HerbCard, VideoCard, SectionTitle } from '../components';
+import Loading from '../components/Loading';
 import { apiGetDiseases, apiGetHerbs, apiGetVideos } from '../services/api';
-import { COLORS } from '../utils/constants';
+import { COLORS, SPACING, FONTS, RADIUS, SHADOW } from '../utils/constants';
 
 export default function HomeScreen() {
   const nav = useNavigation();
@@ -34,44 +39,87 @@ export default function HomeScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <TouchableOpacity onPress={() => nav.navigate('SearchSymptoms')} activeOpacity={0.9}>
-          <SearchBar placeholder="Tafuta dalili..." editable={false} />
+        <View style={styles.hero}>
+          <View style={styles.heroRow}>
+            <Text style={styles.heroIcon}>🩺</Text>
+            <Text style={styles.heroTitle}>Dr.Job</Text>
+          </View>
+          <Text style={styles.heroSub}>Msaada wako wa afya kila siku</Text>
+          <TouchableOpacity onPress={() => nav.navigate('SearchSymptoms')} activeOpacity={0.9} style={styles.searchTouch}>
+            <SearchBar placeholder="Tafuta dalili au ugonjwa..." editable={false} variant="onPrimary" />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.cta} onPress={() => nav.navigate('SearchSymptoms')} activeOpacity={0.9}>
+          <View style={styles.ctaIconWrap}>
+            <Text style={styles.ctaEmoji}>🩺</Text>
+          </View>
+          <View style={styles.ctaTxt}>
+            <Text style={styles.ctaTitle}>Angalia Dalili</Text>
+            <Text style={styles.ctaSub}>Chagua dalili zako, pata majibu haraka</Text>
+          </View>
+          <Text style={styles.chevron}>›</Text>
         </TouchableOpacity>
-        <SectionTitle title="Magonjwa maarufu" onSeeAll={() => nav.navigate('DiseasesTab')} />
+
+        <SectionTitle title="Magonjwa Maarufu" onSeeAll={() => nav.navigate('DiseasesTab')} />
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hList}>
           {diseases.slice(0, 8).map((d) => (
-            <View key={d.id} style={styles.hCard}>
-              <DiseaseCard name={d.name} description={d.description} image={d.image} onPress={() => nav.navigate('DiseaseDetail', { id: d.id })} />
-            </View>
+            <DiseaseCard
+              key={d.id}
+              name={d.name}
+              description={d.description}
+              image={d.image}
+              onPress={() => nav.navigate('DiseaseDetail', { id: d.id })}
+              compact
+            />
           ))}
         </ScrollView>
-        <SectionTitle title="Dawa za asili" onSeeAll={() => nav.navigate('HerbsTab')} />
+
+        <SectionTitle title="Mitishamba" onSeeAll={() => nav.navigate('HerbsTab')} />
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hList}>
           {herbs.slice(0, 6).map((h) => (
-            <View key={h.id} style={styles.hCard}>
-              <HerbCard name={h.name} benefits={h.benefits} image={h.image} onPress={() => nav.navigate('HerbDetail', { id: h.id })} />
-            </View>
+            <HerbCard
+              key={h.id}
+              name={h.name}
+              benefits={h.benefits}
+              image={h.image}
+              onPress={() => nav.navigate('HerbDetail', { id: h.id })}
+            />
           ))}
         </ScrollView>
-        <SectionTitle title="Video za afya" onSeeAll={() => nav.navigate('VideosTab')} />
-        <View style={styles.section}>
-          {videos.slice(0, 2).map((v) => (
-            <VideoCard key={v.id} title={v.title} description={v.description} thumbnail={v.thumbnail} onPress={() => {}} />
+
+        <SectionTitle title="Video za Afya" onSeeAll={() => nav.navigate('VideosTab')} />
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hList}>
+          {videos.slice(0, 4).map((v) => (
+            <VideoCard
+              key={v.id}
+              title={v.title}
+              description={v.description}
+              thumbnail={v.thumbnail}
+              isPremium={v.is_premium}
+              onPress={() => {}}
+            />
           ))}
-        </View>
-        <TouchableOpacity style={styles.cta} onPress={() => nav.navigate('Audios')} activeOpacity={0.9}>
-          <Text style={styles.ctaEmoji}>🎧</Text>
+        </ScrollView>
+
+        <TouchableOpacity style={styles.audioCta} onPress={() => nav.navigate('Audios')} activeOpacity={0.9}>
+          <View style={styles.audioIconWrap}>
+            <Text style={styles.ctaEmoji}>🎧</Text>
+          </View>
           <View style={styles.ctaTxt}>
-            <Text style={styles.ctaTitle}>Somo la sauti</Text>
+            <Text style={styles.ctaTitle}>Sauti za Afya</Text>
             <Text style={styles.ctaSub}>Sikiliza mafunzo ya afya</Text>
           </View>
-          <Text style={styles.ctaArr}>→</Text>
+          <Text style={styles.chevron}>›</Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.premium} onPress={() => nav.navigate('Premium')} activeOpacity={0.9}>
+          <Text style={styles.premEmoji}>💎</Text>
           <Text style={styles.premBadge}>PREMIUM</Text>
           <Text style={styles.premTitle}>Fungua maudhui ya ziada</Text>
         </TouchableOpacity>
-        <View style={{ height: 32 }} />
+
+        <View style={{ height: SPACING.xl }} />
       </ScrollView>
     </View>
   );
@@ -80,17 +128,73 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
   scroll: { flex: 1 },
-  content: { padding: 16, paddingBottom: 24 },
-  hList: { paddingRight: 16, paddingBottom: 8 },
-  hCard: { width: 280, marginRight: 12 },
-  section: { marginBottom: 16 },
-  cta: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.card, borderRadius: 12, padding: 16, marginBottom: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2 },
-  ctaEmoji: { fontSize: 32, marginRight: 14 },
+  content: { paddingBottom: SPACING.lg },
+  hero: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: SPACING.md,
+    paddingTop: SPACING.lg,
+    paddingBottom: SPACING.lg,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+  heroRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
+  heroIcon: { fontSize: 24 },
+  heroTitle: { fontSize: FONTS.size.xl, fontWeight: FONTS.weight.bold, color: COLORS.primaryForeground },
+  heroSub: { fontSize: FONTS.size.sm, color: 'rgba(255,255,255,0.8)', marginBottom: SPACING.md },
+  searchTouch: { marginTop: 4 },
+  cta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.secondary,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.md,
+    marginHorizontal: SPACING.md,
+    marginTop: SPACING.lg,
+  },
+  ctaIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: COLORS.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: SPACING.md,
+  },
   ctaTxt: { flex: 1 },
-  ctaTitle: { fontSize: 16, fontWeight: '700', color: COLORS.text },
-  ctaSub: { fontSize: 13, color: COLORS.textSecondary, marginTop: 2 },
-  ctaArr: { fontSize: 20, color: COLORS.primary, fontWeight: '700' },
-  premium: { backgroundColor: COLORS.primary, borderRadius: 12, padding: 16, alignItems: 'center' },
-  premBadge: { fontSize: 11, fontWeight: '800', color: 'rgba(255,255,255,0.9)', letterSpacing: 1, marginBottom: 6 },
-  premTitle: { fontSize: 17, fontWeight: '700', color: '#fff' },
+  ctaEmoji: { fontSize: 24 },
+  chevron: { fontSize: 24, color: COLORS.primary, fontWeight: 'bold' },
+  ctaTitle: { fontSize: FONTS.size.sm, fontWeight: FONTS.weight.semibold, color: COLORS.text },
+  ctaSub: { fontSize: 12, color: COLORS.mutedForeground, marginTop: 2 },
+  hList: { paddingHorizontal: SPACING.md, paddingBottom: SPACING.sm },
+  audioCta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.card,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.md,
+    marginHorizontal: SPACING.md,
+    marginTop: SPACING.md,
+    ...SHADOW.card,
+  },
+  audioIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: COLORS.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: SPACING.md,
+  },
+  premium: {
+    backgroundColor: COLORS.accent,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.lg,
+    alignItems: 'center',
+    marginHorizontal: SPACING.md,
+    marginTop: SPACING.md,
+    ...SHADOW.button,
+  },
+  premEmoji: { fontSize: 20, marginBottom: SPACING.sm },
+  premBadge: { fontSize: 11, fontWeight: FONTS.weight.extrabold, color: COLORS.accentForeground, letterSpacing: 1 },
+  premTitle: { fontSize: FONTS.size.lg, fontWeight: FONTS.weight.bold, color: COLORS.accentForeground, marginTop: 2 },
 });
